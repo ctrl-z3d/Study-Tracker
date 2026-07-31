@@ -1,0 +1,16 @@
+fix lock in. lock in will do a cool animation and display the lockin.and it will not let the user change the lock in for the day. if user hits the lockin time, then add to the lockin streak.
+
+log day should add to the timer and a undo option for 10s after confirmation of log day
+
+x or x.1 hours to x hours and y minutes for all time shown
+
+new settings tab. option with theme modes. one theme keep this current one add a new theme with  (  sage green,.pink and.baby yellow. will keep developing settings tab later.
+
+movable always on top widget that shows current timer on the side. changeable in settings that if i want it as a always on top widget or not. always on top means no matter what window im in its going to be a visible timer on my screen very small but visible.
+
+Stats tab. shows various data that are analyzeable visually. like number of breaks, comparisons from current trend, what improved what to improve etc.
+
+Settings option to always start on startup
+
+scenario: if today 11:49pm  i start a timer, and then i dont stop it and next day starts. at exactly 12:00 am hit pause play automatically to not lose data and do a notification inside app with a dismiss button with random quote about hardwork and passion like "new day new beginnings" with a dismiss button to let user know a new day started and the data logging is safe.
+
