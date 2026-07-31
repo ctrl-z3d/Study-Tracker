@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
+<title>Study Tracker</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="app">
+
+    <nav class="topnav">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-text">study_tracker</span>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-view="study">Study Mode</button>
+        <button class="nav-tab" data-view="tracker">Tracker</button>
+        <button class="nav-tab" data-view="journal">Journal</button>
+      </div>
+      <div class="goal-input-wrap">
+        <label class="goal-label" for="goalInput">today's goal</label>
+        <input type="number" id="goalInput" min="0" step="0.5" value="4" />
+        <span class="goal-unit">hrs</span>
+        <button id="goalLockBtn" class="goal-lock-btn" title="Lock in today's goal">Lock in</button>
+      </div>
+    </nav>
+
+    <!-- ===================== STUDY MODE ===================== -->
+    <section id="view-study" class="view active">
+
+      <div class="timer-panel">
+        <div class="timer-date" id="timerDateLabel">Today</div>
+        <div class="timer-display">
+          <span class="rec-dot" id="recDot"></span>
+          <span id="timerDigits">00:00:00</span>
+        </div>
+        <div class="timer-sub">
+          <span id="timerTodayTotal">0.00h logged today</span>
+        </div>
+        <button id="timerToggleBtn" class="timer-btn">
+          <span id="timerBtnIcon">&#9654;</span>
+          <span id="timerBtnLabel">Start</span>
+        </button>
+      </div>
+
+      <div class="journal-panel">
+        <div class="journal-head">
+          <span class="journal-title">Journal &mdash; <span id="journalDateLabel">today</span></span>
+          <span class="journal-status" id="journalStatus"></span>
+        </div>
+        <textarea id="journalText" placeholder="What did you study today? Notes, reflections, blockers..."></textarea>
+        <div class="journal-actions">
+          <button id="journalSaveBtn" class="save-btn">Save entry</button>
+          <button id="journalOverwriteBtn" class="overwrite-btn hidden">Hold to overwrite existing entry</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===================== TRACKER ===================== -->
+    <section id="view-tracker" class="view">
+
+      <header class="ledger-head">
+        <div class="head-left">
+          <span class="eyebrow">Analytics</span>
+          <div class="month-nav">
+            <button id="prevMonth" class="nav-btn" aria-label="Previous month">&#8249;</button>
+            <h1 id="monthLabel">July 2026</h1>
+            <button id="nextMonth" class="nav-btn" aria-label="Next month">&#8250;</button>
+          </div>
+        </div>
+        <div class="head-right">
+          <div class="range-tabs">
+            <button class="range-tab active" data-range="daily">Daily</button>
+            <button class="range-tab" data-range="weekly">Weekly</button>
+            <button class="range-tab" data-range="monthly">Monthly</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="chart-section">
+        <svg id="chart" viewBox="0 0 1000 340" preserveAspectRatio="xMidYMid meet"></svg>
+      </section>
+
+      <section class="stats-strip">
+        <div class="stat">
+          <span class="stat-value" id="statTotal">0</span>
+          <span class="stat-label">total hours</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statAvg">0</span>
+          <span class="stat-label">avg / logged day</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statBest">&mdash;</span>
+          <span class="stat-label">best day</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statStreak">0</span>
+          <span class="stat-label">day streak</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statGoalDays">0</span>
+          <span class="stat-label">goal days hit</span>
+        </div>
+      </section>
+
+      <footer class="entry-dock">
+        <div class="entry-field">
+          <label for="dayInput">Day</label>
+          <input type="text" id="dayInput" readonly />
+        </div>
+        <div class="entry-field">
+          <label for="hoursInput">Hours studied</label>
+          <input type="number" id="hoursInput" min="0" step="0.25" placeholder="e.g. 3.5" />
+        </div>
+        <button id="logBtn" class="log-btn">Log day</button>
+        <span id="savedNote" class="saved-note"></span>
+        <span class="entry-hint">Log day only works for today — this locks in what actually happened.</span>
+      </footer>
+
+      <div class="filepath-note" id="filepathNote"></div>
+    </section>
+
+    <!-- ===================== JOURNAL (history) ===================== -->
+    <section id="view-journal" class="view">
+      <header class="ledger-head">
+        <div class="head-left">
+          <span class="eyebrow">Journal</span>
+          <h1 style="margin:0;">Past entries</h1>
+        </div>
+      </header>
+      <div id="journalList" class="journal-list"></div>
+    </section>
+
+  </div>
+
+  <!-- ===================== PAUSE / RESUME MODAL ===================== -->
+  <div id="pauseOverlay" class="pause-overlay hidden">
+    <div class="pause-modal">
+      <div class="pause-title">Still studying?</div>
+      <div class="pause-sub">The timer paused after 30 minutes. Paused for:</div>
+      <div class="pause-counter" id="pauseCounter">00:00</div>
+
+      <div id="pausePromptEarly" class="pause-actions">
+        <button id="resumeEarlyBtn" class="timer-btn">Resume</button>
+      </div>
+
+      <div id="pausePromptLate" class="pause-actions hidden">
+        <div class="pause-question">Add this paused time to your study log?</div>
+        <div class="pause-actions-row">
+          <button id="addPausedBtn" class="timer-btn">Yes, add it &amp; resume</button>
+          <button id="discardPausedBtn" class="timer-btn secondary">No, just resume</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="renderer.js"></script>
+</body>
+</html>
